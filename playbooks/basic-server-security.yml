@@ -1,0 +1,30 @@
+---
+- hosts: all
+  roles:
+    - openmicroscopy.selinux-utils
+    - sansible.users_and_groups
+    - geerlingguy.repo-epel
+    - geerlingguy.security
+    - geerlingguy.firewall
+  vars:
+    sansible_users_and_groups_groups:
+      - name: docker
+
+    sansible_users_and_groups_users:
+      - name: peter
+        groups:
+          - docker
+          - wheel
+        ssh_key: ~/.ssh/id_rsa.pub
+
+    sansible_users_and_groups_sudoers:
+      - name: wheel
+        user: "%wheel"
+        runas: "ALL=(ALL)"
+        commands: "NOPASSWD: ALL"
+
+    firewall_allowed_tcp_ports:
+      - "22"
+      - "80"
+      - "443"
+      - "6443"
